@@ -34,26 +34,29 @@ function App() {
 
     return (
         <>
-            <Canvas
-                style={{
-                    position: "fixed",
-                    width: "100vw",
-                    height: "100vh",
-                }}
-            >
-                <color args={[0x808080]} attach="background"/>
-                <PerspectiveCamera ref={cameraRef} makeDefault position={[0, 1.6, 2]} fov={75} />
-                <Environment preset="warehouse"/>
-                <mesh rotation-x={-Math.PI / 2}>
-                    <planeGeometry args={[100, 100]}/>
-                    <meshStandardMaterial color="green"/>
-                </mesh>
-                <XR store={xrStore}/>
-                <WasdControls />
-                <LookControls />
+            <div onContextMenu={(e) => e.nativeEvent.preventDefault()}>
+                <Canvas
+                    style={{
+                        position: "fixed",
+                        width: "100vw",
+                        height: "100vh",
+                    }}
+                >
+                    <color args={[0x808080]} attach="background"/>
+                    <PerspectiveCamera ref={cameraRef} makeDefault position={[0, 2.5, 2]} fov={75} />
+                    <Environment preset="warehouse"/>
+                    <mesh rotation-x={-Math.PI / 2}>
+                        <planeGeometry args={[100, 100]}/>
+                        <meshStandardMaterial color="green"/>
+                    </mesh>
+                    <XR store={xrStore}/>
 
-                <Board />
-            </Canvas>
+                    <WasdControls />
+                    <LookControls />
+
+                    <Board />
+                </Canvas>
+            </div>
             <div
                 style={{
                     position: "fixed",
