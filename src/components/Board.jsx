@@ -3,7 +3,7 @@ import Tile from "./Tile";
 import { MinesweeperGame } from "./mineLogic.js";
 
 export default function Board() {
-    const [game] = useState(new MinesweeperGame(9, 10));
+    const [game] = useState(/*new MinesweeperGame(9, 10)*/null);
     const [, setTrigger] = useState(0);
 
     const updateGrid = () => setTrigger(prev => prev + 1); // Force re-render

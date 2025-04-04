@@ -46,7 +46,7 @@ function App() {
                 <Environment preset="warehouse"/>
                 <mesh rotation-x={-Math.PI / 2}>
                     <planeGeometry args={[100, 100]}/>
-                    <meshStandardMaterial color="gray"/>
+                    <meshStandardMaterial color="green"/>
                 </mesh>
                 <XR store={xrStore}/>
                 <WasdControls />
@@ -64,6 +64,7 @@ function App() {
                     justifyContent: "space-between",
                     alignItems: "center",
                     color: "white",
+                    pointerEvents: "none",
                 }}
             >
                 <button
