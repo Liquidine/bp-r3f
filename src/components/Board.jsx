@@ -3,15 +3,16 @@ import Tile from "./Tile";
 import {processUserInput, startNewGame} from "./fetch_api.js";
 import {MinesweeperInterface} from "./MineInterface.js";
 
-export default function Board() {
+export default function Board({ position = [0, 0, 0] }) {
     const [gameData, setGameData] = useState(null);
     const [loading,setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [, setTrigger] = useState(0);
     const size = 9;
     const mineCount= 10;
 
-    const tileSize = 1;
-    const gap = 0.05;
+    const tileSize = 1.2;
+    const gap = 0;
     const spacing = tileSize + gap;
 
     const updateGrid = () => setTrigger(prev => prev + 1); // Force re-render
@@ -36,6 +37,7 @@ export default function Board() {
                 setGameData(gameInterface);
             } catch (error) {
                 console.error("Error starting the game:", error);
+                setLoading(false);
             }
         };
 
@@ -73,9 +75,20 @@ export default function Board() {
         updateGrid();
     };
 
-    if (loading) {
-        return
+    if (loading) return null;
+
+    if (error) {
+        return (
+            <group>
+                <mesh position={[0, 1, 0]}>
+                    <textGeometry args={[error, { size: 0.3, height: 0.05 }]} />
+                    <meshStandardMaterial color="red" />
+                </mesh>
+            </group>
+        );
     }
+
+    if (!gameData) return null;
 
     const revealAll = () => {
         if (!gameData) return;
@@ -97,22 +110,25 @@ export default function Board() {
 
 
     return (
-        <group position={[-(9 * spacing) / 2, 0, -(9 * spacing) / 2]}> {/* Center the grid */}
-            {gameData.grid.map((tile, index) => {
-                const x = (index % 9) * spacing;
-                const z = Math.floor(index / 9) * spacing;
-                return (
-                    <Tile
-                        key={index}
-                        position={[x, 0, z]}
-                        index={index}
-                        game={gameData}
-                        updateGrid={updateGrid}
-                        handleClick={handleTileClick}
-                        handleMark={handleTileMark}
-                    />
-                );
-            })}
+        <group position={position}>
+            <group position={[-(9 * spacing) / 2, 0, -(9 * spacing) / 2]}> {/* Center the grid */}
+                {gameData.grid.map((tile, index) => {
+                    const x = (index % 9) * spacing;
+                    const z = Math.floor(index / 9) * spacing;
+                    return (
+                        <Tile
+                            key={index}
+                            position={[x, 0, z]}
+                            index={index}
+                            size={tileSize}
+                            game={gameData}
+                            updateGrid={updateGrid}
+                            handleClick={handleTileClick}
+                            handleMark={handleTileMark}
+                        />
+                    );
+                })}
+            </group>
         </group>
     );
 }

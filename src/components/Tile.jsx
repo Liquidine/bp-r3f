@@ -1,9 +1,13 @@
-import { useState } from "react";
-import { Text } from "@react-three/drei";
+import {useMemo, useState} from "react";
+import { TextureLoader} from "three";
+import {useLoader} from "@react-three/fiber";
+import {Flag} from "./models/flag.jsx";
 
-export default function Tile({ position, index, game, updateGrid, handleClick, handleMark }) {
+export default function Tile({ position, index, size, game, updateGrid, handleClick, handleMark }) {
     const [hovered, setHovered] = useState(false);
     const tile = game.grid[index];
+
+    const flagRotation = useMemo(() => [0, Math.random() * Math.PI * 2, 0], []);
 
     const handlePointerOver = (e) => {
         e.stopPropagation();
@@ -49,6 +53,43 @@ export default function Tile({ position, index, game, updateGrid, handleClick, h
         }
     }
 
+    const textures = useLoader(TextureLoader, [
+        'mineTextures/mine.png',
+        'mineTextures/tile0.png',
+        'mineTextures/tile0-1.png',
+        'mineTextures/tile1.png',
+        'mineTextures/tile2.png',
+        'mineTextures/tile3.png',
+        'mineTextures/tile4.png',
+        'mineTextures/tile5.png',
+        'mineTextures/tile6.png',
+        'mineTextures/tile7.png',
+        'mineTextures/tile8.png'
+    ])
+
+    const getTexture = () => {
+        if (tile.revealed) {
+            if (tile.mine) {
+                return textures[0];
+            } else {
+                // Revealed, not a mine — color based on clue
+                return textures[tile.clue+2]
+            }
+        } else {
+            return textures[1];
+        }
+    }
+
+    const hoverEffect = () => {
+        if(tile.marked) return "gold";
+
+        if (hovered && !tile.revealed && !tile.marked) {
+            return "lightblue"
+        } else {
+            return "white"
+        }
+    }
+
     return (
         <mesh
             position={position}
@@ -57,18 +98,13 @@ export default function Tile({ position, index, game, updateGrid, handleClick, h
             onClick={clickTile}
             onContextMenu={handleRightClick}
         >
-            <boxGeometry args={[1, 1, 1]} /> {/* Ensure each tile is 1x1 */}
+            <boxGeometry args={[size, size, size]} />
             <meshStandardMaterial
-                color={determineColour()}
+                map={getTexture()} color={hoverEffect()}
             />
-            {tile.revealed && !tile.mine && tile.clue > 0 && (
-                <Text position={[0, 0.9, 0]}
-                      fontSize={0.5}
-                      color="black"
-                      font="/Roboto-Regular.ttf" // Make sure you include this file in your `public/fonts` folder
-                >
-                    {tile.clue}
-                </Text>
+
+            {tile.marked && !tile.revealed && (
+                <Flag position={[0, 0.7, 0]} scale={[0.1,0.1,0.1]} rotation={flagRotation}/>
             )}
         </mesh>
     );
