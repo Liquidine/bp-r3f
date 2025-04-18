@@ -8,7 +8,7 @@ import React from 'react'
 import { useGLTF } from '@react-three/drei'
 
 export function Dressing(props) {
-  const { nodes, materials } = useGLTF('public/models/dressing-transformed.glb')
+  const { nodes, materials } = useGLTF('models/dressing-transformed.glb')
   return (
     <group {...props} dispose={null}>
       <mesh castShadow receiveShadow geometry={nodes.mesh_0.geometry} material={nodes.mesh_0.material} material-roughness="1" material-metalness="0"/>
@@ -16,4 +16,4 @@ export function Dressing(props) {
   )
 }
 
-useGLTF.preload('public/models/dressing-transformed.glb')
+useGLTF.preload('models/dressing-transformed.glb')

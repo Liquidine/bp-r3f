@@ -8,7 +8,7 @@ import React from 'react'
 import { useGLTF } from '@react-three/drei'
 
 export function Floor(props) {
-  const { nodes, materials } = useGLTF('public/models/floor-transformed.glb')
+  const { nodes, materials } = useGLTF('models/floor-transformed.glb')
   return (
     <group {...props} dispose={null}>
       <mesh castShadow receiveShadow geometry={nodes.mesh_0.geometry} material={nodes.mesh_0.material} rotation={[-Math.PI / 2, 0, 0]} scale={[1, 1, 5]} material-roughness="1" />
@@ -16,4 +16,4 @@ export function Floor(props) {
   )
 }
 
-useGLTF.preload('public/models/floor-transformed.glb')
+useGLTF.preload('models/floor-transformed.glb')

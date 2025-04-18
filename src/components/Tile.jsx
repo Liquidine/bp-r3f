@@ -1,9 +1,9 @@
-import {useMemo, useState} from "react";
+import {forwardRef, useMemo, useState} from "react";
 import { TextureLoader} from "three";
 import {useLoader} from "@react-three/fiber";
 import {Flag} from "./models/flag.jsx";
 
-export default function Tile({ position, index, size, game, updateGrid, handleClick, handleMark }) {
+const Tile = forwardRef(({ position, index, size, game, updateGrid, handleClick, handleMark }, ref) => {
     const [hovered, setHovered] = useState(false);
     const tile = game.grid[index];
 
@@ -97,6 +97,7 @@ export default function Tile({ position, index, size, game, updateGrid, handleCl
             onPointerOut={handlePointerOut}
             onClick={clickTile}
             onContextMenu={handleRightClick}
+            ref={ref}
         >
             <boxGeometry args={[size, size, size]} />
             <meshStandardMaterial
@@ -108,4 +109,6 @@ export default function Tile({ position, index, size, game, updateGrid, handleCl
             )}
         </mesh>
     );
-}
+});
+
+export default Tile;

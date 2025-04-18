@@ -8,7 +8,7 @@ import React from 'react'
 import { useGLTF } from '@react-three/drei'
 
 export function Stick(props) {
-  const { nodes, materials } = useGLTF('public/models/stick-transformed.glb')
+  const { nodes, materials } = useGLTF('models/stick-transformed.glb')
   return (
     <group {...props} dispose={null}>
       <mesh geometry={nodes.Stick_Material_0.geometry} material={materials['Material.001']} position={[0, 0.526, 0]} rotation={[0, -Math.PI / 2, 0]} scale={[0.004, 0.005, 0.004]} />
@@ -16,4 +16,4 @@ export function Stick(props) {
   )
 }
 
-useGLTF.preload('public/models/stick-transformed.glb')
+useGLTF.preload('models/stick-transformed.glb')

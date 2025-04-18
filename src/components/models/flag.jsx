@@ -8,7 +8,7 @@ import React from 'react'
 import { useGLTF } from '@react-three/drei'
 
 export function Flag(props) {
-  const { nodes, materials } = useGLTF('public/models/flag-transformed.glb')
+  const { nodes, materials } = useGLTF('models/flag-transformed.glb')
   return (
     <group {...props} dispose={null}>
       <group rotation={[Math.PI / 2, 0, 0]} scale={[1, 1, 0.25]}>
@@ -20,4 +20,4 @@ export function Flag(props) {
   )
 }
 
-useGLTF.preload('public/models/flag-transformed.glb')
+useGLTF.preload('models/flag-transformed.glb')

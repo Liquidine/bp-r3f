@@ -8,7 +8,7 @@ import React from 'react'
 import { useGLTF } from '@react-three/drei'
 
 export function Pillar(props) {
-  const { nodes, materials } = useGLTF('public/models/pillar-transformed.glb')
+  const { nodes, materials } = useGLTF('models/pillar-transformed.glb')
   return (
     <group {...props} dispose={null}>
       <mesh geometry={nodes.Object_32.geometry} material={materials.Columna_Material} position={[0, 3.299, 0]} rotation={[-Math.PI / 2, 0, 0]} />
@@ -16,4 +16,4 @@ export function Pillar(props) {
   )
 }
 
-useGLTF.preload('public/models/pillar-transformed.glb')
+useGLTF.preload('models/pillar-transformed.glb')

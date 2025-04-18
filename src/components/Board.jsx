@@ -1,15 +1,19 @@
-import {useEffect, useState} from "react";
+import {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import Tile from "./Tile";
 import {processUserInput, startNewGame} from "./fetch_api.js";
 import {MinesweeperInterface} from "./MineInterface.js";
+import {useFrame} from "@react-three/fiber";
+import {Box3} from "three";
 
-export default function Board({ position = [0, 0, 0] }) {
+export default function Board({ position = [0, 0, 0] ,leftControllerRef,rightControllerRef}) {
     const [gameData, setGameData] = useState(null);
     const [loading,setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [, setTrigger] = useState(0);
     const size = 9;
     const mineCount= 10;
+
+    const tileRefs = useRef([]);
 
     const tileSize = 1.2;
     const gap = 0;
@@ -43,6 +47,51 @@ export default function Board({ position = [0, 0, 0] }) {
 
         startGame().then(() => { setLoading(false)});
     }, []);
+
+    useFrame(() => {
+        //TODO: Clean this up and add a delay for marking at least
+        const leftController = leftControllerRef?.current;
+        const rightController = rightControllerRef?.current;
+
+        if (leftController?.isTriggerPressed()) {
+            const controllerHitbox = leftController.getHitbox();
+            if (!controllerHitbox) return;
+
+            const controllerBox = new Box3().setFromObject(controllerHitbox);
+
+            for (let i = 0; i < tileRefs.current.length; i++) {
+                const tile = tileRefs.current[i];
+                if (!tile) continue;
+
+                const tileBox = new Box3().setFromObject(tile);
+
+                if (controllerBox.intersectsBox(tileBox)) {
+                    console.log("Intersection detected")
+                    handleTileMark(i);
+                    break;
+                }
+            }
+        } else if(rightController?.isTriggerPressed()) {
+            const controllerHitbox = rightController.getHitbox();
+            if (!controllerHitbox) return;
+
+            const controllerBox = new Box3().setFromObject(controllerHitbox);
+
+            for (let i = 0; i < tileRefs.current.length; i++) {
+                const tile = tileRefs.current[i];
+                if (!tile) continue;
+
+                const tileBox = new Box3().setFromObject(tile);
+
+                if (controllerBox.intersectsBox(tileBox)) {
+                    console.log("Intersection detected")
+                    handleTileClick(i);
+                    break;
+                }
+            }
+        }
+
+    });
 
     const handleTileClick = async (index) => {
         if (!gameData) return;
@@ -118,6 +167,7 @@ export default function Board({ position = [0, 0, 0] }) {
                     return (
                         <Tile
                             key={index}
+                            ref={(ref) => (tileRefs.current[index] = ref)}
                             position={[x, 0, z]}
                             index={index}
                             size={tileSize}
@@ -131,4 +181,4 @@ export default function Board({ position = [0, 0, 0] }) {
             </group>
         </group>
     );
-}
+};

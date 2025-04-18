@@ -8,7 +8,7 @@ import React from 'react'
 import { useGLTF } from '@react-three/drei'
 
 export function Podium(props) {
-  const { nodes, materials } = useGLTF('public/models/podium-transformed.glb')
+  const { nodes, materials } = useGLTF('models/podium-transformed.glb')
   return (
     <group {...props} dispose={null}>
       <mesh geometry={nodes.PodiumLarge_PodiumLarge_Material_0.geometry} material={materials['Suelo_Bueno.001']} position={[0, 1.328, -0.326]} rotation={[-Math.PI / 2, 0, 0]} scale={[19.208, 16.483, 0.358]} />
@@ -16,4 +16,4 @@ export function Podium(props) {
   )
 }
 
-useGLTF.preload('public/models/podium-transformed.glb')
+useGLTF.preload('models/podium-transformed.glb')
