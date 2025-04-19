@@ -14,6 +14,10 @@ export default function Board({ position = [0, 0, 0] ,leftControllerRef,rightCon
     const mineCount= 10;
 
     const tileRefs = useRef([]);
+    const lastInteractedTile = useRef({
+        left: null,
+        right: null,
+    });
 
     const tileSize = 1.2;
     const gap = 0;
@@ -49,15 +53,32 @@ export default function Board({ position = [0, 0, 0] ,leftControllerRef,rightCon
     }, []);
 
     useFrame(() => {
-        //TODO: Clean this up and add a delay for marking at least
-        const leftController = leftControllerRef?.current;
-        const rightController = rightControllerRef?.current;
+        const interactionState = {
+            left: {
+                ref: leftControllerRef.current,
+                lastTile: lastInteractedTile.current.left,
+                interacting: false,
+                trigger: 'isTriggerPressed',
+                handler: handleTileMark
+            },
+            right: {
+                ref: rightControllerRef.current,
+                lastTile: lastInteractedTile.current.right,
+                interacting: false,
+                trigger: 'isTriggerPressed',
+                handler: handleTileClick
+            }
+        };
 
-        if (leftController?.isTriggerPressed()) {
-            const controllerHitbox = leftController.getHitbox();
-            if (!controllerHitbox) return;
+        Object.entries(interactionState).forEach(([side, { ref, lastTile, trigger, handler }]) => {
+            if (!ref || typeof ref[trigger] !== 'function') return;
 
-            const controllerBox = new Box3().setFromObject(controllerHitbox);
+            const isPressed = ref[trigger]();
+            const hitbox = ref.getHitbox();
+            if (!hitbox) return;
+
+            const controllerBox = new Box3().setFromObject(hitbox);
+            let interactionOccurred = false;
 
             for (let i = 0; i < tileRefs.current.length; i++) {
                 const tile = tileRefs.current[i];
@@ -66,31 +87,22 @@ export default function Board({ position = [0, 0, 0] ,leftControllerRef,rightCon
                 const tileBox = new Box3().setFromObject(tile);
 
                 if (controllerBox.intersectsBox(tileBox)) {
-                    console.log("Intersection detected")
-                    handleTileMark(i);
+                    interactionOccurred = true;
+
+                    if (lastInteractedTile.current[side] === null && isPressed) {
+                        handler(i); // Interact once
+                        lastInteractedTile.current[side] = i;
+                    }
+
                     break;
                 }
             }
-        } else if(rightController?.isTriggerPressed()) {
-            const controllerHitbox = rightController.getHitbox();
-            if (!controllerHitbox) return;
 
-            const controllerBox = new Box3().setFromObject(controllerHitbox);
-
-            for (let i = 0; i < tileRefs.current.length; i++) {
-                const tile = tileRefs.current[i];
-                if (!tile) continue;
-
-                const tileBox = new Box3().setFromObject(tile);
-
-                if (controllerBox.intersectsBox(tileBox)) {
-                    console.log("Intersection detected")
-                    handleTileClick(i);
-                    break;
-                }
+            // If no interaction this frame (i.e., controller cleared tiles), reset the debounce
+            if (!interactionOccurred) {
+                lastInteractedTile.current[side] = null;
             }
-        }
-
+        });
     });
 
     const handleTileClick = async (index) => {

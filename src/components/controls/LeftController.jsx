@@ -18,9 +18,9 @@ export const LeftController = forwardRef((props, ref) => {
 
     return (
         <group>
-            <Flag scale={0.02}/>
-            <mesh ref={hitboxRef} visible={true} position={[0,0,0]}>
-                <boxGeometry args={[0.05, 0.05, 0.05]}/>
+            <Flag scale={0.1} position={[0,-1,0]}/>
+            <mesh ref={hitboxRef} visible={true} position={[0,-1,0]}>
+                <boxGeometry args={[0.3, 0.3, 0.3]}/>
                 <meshBasicMaterial color="blue" wireframe/>
             </mesh>
         </group>
