@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
-import { useThree } from "@react-three/fiber";
-import { Euler } from 'three'
+import {useEffect} from 'react'
+import {useThree} from "@react-three/fiber";
+import {Euler} from 'three'
 
 const euler = new Euler(0, 0, 0, 'YXZ')
 

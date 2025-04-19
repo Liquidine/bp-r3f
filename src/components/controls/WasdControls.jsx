@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { useFrame, useThree } from "@react-three/fiber";
-import { Vector3 } from 'three';
+import {useEffect, useRef} from 'react';
+import {useFrame, useThree} from "@react-three/fiber";
+import {Vector3} from 'three';
 
 //from: https://codesandbox.io/p/sandbox/r3f-wasd-controls-wft0n?file=%2Fsrc%2FWasdControls.js
 // Reference to a set of active KeyboardEvent.code entries

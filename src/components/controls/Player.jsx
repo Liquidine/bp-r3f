@@ -1,16 +1,11 @@
 // Player.jsx
 //implementation from:https://qiita.com/f-kaito/items/a68ea9fd1e5b378f178e#%E6%9C%80%E5%BE%8C%E3%81%AB
-import { useKeyboardControls } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
-import {
-    CapsuleCollider,
-    interactionGroups,
-    RigidBody,
-    useRapier
-} from '@react-three/rapier'
-import { IfInSessionMode } from '@react-three/xr'
-import { useRef, useState } from 'react'
-import { VRController } from './VRControls.jsx'
+import {useKeyboardControls} from '@react-three/drei'
+import {useFrame} from '@react-three/fiber'
+import {CapsuleCollider, interactionGroups, RigidBody, useRapier} from '@react-three/rapier'
+import {IfInSessionMode} from '@react-three/xr'
+import {useRef, useState} from 'react'
+import {VRController} from './VRControls.jsx'
 import * as THREE from 'three'
 
 const SPEED = 5

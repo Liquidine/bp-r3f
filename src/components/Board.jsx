@@ -1,4 +1,4 @@
-import {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import Tile from "./Tile";
 import {processUserInput, startNewGame} from "./fetch_api.js";
 import {MinesweeperInterface} from "./MineInterface.js";

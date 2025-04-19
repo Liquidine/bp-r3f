@@ -1,5 +1,5 @@
 import {Stick} from "../models/stick.jsx";
-import {useXRControllerButtonEvent, useXRInputSourceState, useXRInputSourceStateContext} from "@react-three/xr";
+import {useXRControllerButtonEvent, useXRInputSourceState} from "@react-three/xr";
 import {forwardRef, useImperativeHandle, useRef} from "react";
 
 export const RightController = forwardRef((props, ref) => {
