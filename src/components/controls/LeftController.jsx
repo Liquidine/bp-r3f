@@ -1,9 +1,9 @@
 import {Flag} from "../models/flag.jsx";
-import {useXRControllerButtonEvent, useXRInputSourceStateContext} from "@react-three/xr";
+import {useXRControllerButtonEvent, useXRInputSourceState, useXRInputSourceStateContext} from "@react-three/xr";
 import {forwardRef, useImperativeHandle, useRef, useState} from "react";
 
 export const LeftController = forwardRef((props, ref) => {
-    const state = useXRInputSourceStateContext("controller");
+    const state = useXRInputSourceState("controller","left");
     const hitboxRef = useRef();
     const triggerPressed = useRef(false);
 

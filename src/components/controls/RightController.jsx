@@ -1,9 +1,9 @@
 import {Stick} from "../models/stick.jsx";
-import {useXRControllerButtonEvent, useXRInputSourceStateContext} from "@react-three/xr";
+import {useXRControllerButtonEvent, useXRInputSourceState, useXRInputSourceStateContext} from "@react-three/xr";
 import {forwardRef, useImperativeHandle, useRef} from "react";
 
 export const RightController = forwardRef((props, ref) => {
-    const state = useXRInputSourceStateContext("controller");
+    const state = useXRInputSourceState("controller","right");
     const hitboxRef = useRef();
     const triggerPressed= useRef(false);
 

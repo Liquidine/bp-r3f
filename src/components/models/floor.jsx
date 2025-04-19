@@ -6,12 +6,15 @@ Files: public/models/unoptimised/floor.glb [1.95MB] > C:\Dokumentumok\.Uni\.zs20
 
 import React from 'react'
 import { useGLTF } from '@react-three/drei'
+import {RigidBody} from "@react-three/rapier";
 
 export function Floor(props) {
   const { nodes, materials } = useGLTF('models/floor-transformed.glb')
   return (
     <group {...props} dispose={null}>
-      <mesh castShadow receiveShadow geometry={nodes.mesh_0.geometry} material={nodes.mesh_0.material} rotation={[-Math.PI / 2, 0, 0]} scale={[1, 1, 5]} material-roughness="1" />
+        <RigidBody type={"fixed"} colliders={"cuboid"}>
+            <mesh castShadow receiveShadow geometry={nodes.mesh_0.geometry} material={nodes.mesh_0.material} rotation={[-Math.PI / 2, 0, 0]} scale={[1, 1, 5]} material-roughness="1" />
+        </RigidBody>
     </group>
   )
 }

@@ -1,7 +1,7 @@
 import {Canvas, useFrame} from "@react-three/fiber";
 import {useRef, useState} from "react";
 import {createXRStore, TeleportTarget, useXRInputSourceState, XR, XROrigin} from "@react-three/xr";
-import {Environment, PerspectiveCamera} from "@react-three/drei";
+import {Environment, KeyboardControls, PerspectiveCamera} from "@react-three/drei";
 import LookControls from "./components/controls/CameraControls.jsx";
 import WasdControls from "./components/controls/WasdControls.jsx";
 import Board from "./components/Board.jsx";
@@ -14,6 +14,8 @@ import {Podium} from "./components/models/podium.jsx";
 import {Group, Vector3} from "three";
 import {LeftController} from "./components/controls/LeftController.jsx";
 import {RightController} from "./components/controls/RightController.jsx";
+import {Player} from "./components/controls/Player.jsx";
+import {Physics, RigidBody} from "@react-three/rapier";
 
 //parts from: https://github.com/meta-quest/webxr-first-steps-react/blob/starting-template/tutorial/chapter1.md
 
@@ -53,9 +55,21 @@ function App() {
     return (
         <>
             <div onContextMenu={(e) => e.nativeEvent.preventDefault()}>
+                <KeyboardControls
+                    map={[
+                        { name: 'forward', keys: ['ArrowUp', 'KeyW'] },
+                        { name: 'backward', keys: ['ArrowDown', 'KeyS'] },
+                        { name: 'left', keys: ['ArrowLeft', 'KeyA'] },
+                        { name: 'right', keys: ['ArrowRight', 'KeyD'] },
+                        { name: 'jump', keys: ['Space'] },
+                    ]}
+                >
                 <Canvas
                     style={{position: "fixed", width: "100vw", height: "100vh",}}
                     shadows
+                    onCreated={({ camera }) => {
+                        window.cameraRef = camera
+                    }}
                 >
                     <color args={[0x808080]} attach="background"/>
                     <PerspectiveCamera ref={cameraRef} makeDefault position={[0, 4, 14]} fov={75}/>
@@ -76,18 +90,19 @@ function App() {
                         shadow-camera-right={300}
                     />
                     <XR store={xrStore}>
-                        <XROrigin position={position}/>
-                        <TeleportTarget onTeleport={setPosition}>
+                        <Physics gravity={[0, -9.81, 0]}>
                             <Floor/>
-                            <mesh position={[0, 1.1, 0]} visible={false}>
-                            <boxGeometry args={[19,1,17]}/>
-                                <meshBasicMaterial color="green"/>
-                            </mesh>
-                        </TeleportTarget>
+                            <RigidBody type="fixed" colliders="cuboid">
+                                <mesh position={[0, 1.1, 0]} visible={false}>
+                                    <boxGeometry args={[19, 1, 17]}/>
+                                    <meshBasicMaterial color="green"/>
+                                </mesh>
+                            </RigidBody>
+                            <Player/>
+                        </Physics>
                         <Podium/>
                     </XR>
 
-                    <WasdControls/>
                     <LookControls/>
 
                     <Dressing/>
@@ -95,6 +110,7 @@ function App() {
                            rightControllerRef={RightControlRef}
                            position={[0.7, 1.5, -0.5]}/>
                 </Canvas>
+                </KeyboardControls>
             </div>
             <div
                 style={{
