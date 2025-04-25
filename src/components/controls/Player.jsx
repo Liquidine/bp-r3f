@@ -1,10 +1,10 @@
 // Player.jsx
 //implementation from:https://qiita.com/f-kaito/items/a68ea9fd1e5b378f178e#%E6%9C%80%E5%BE%8C%E3%81%AB
 import {useKeyboardControls} from '@react-three/drei'
-import {useFrame} from '@react-three/fiber'
-import {CapsuleCollider, interactionGroups, RigidBody, useRapier} from '@react-three/rapier'
-import {IfInSessionMode} from '@react-three/xr'
-import {useRef, useState} from 'react'
+import {useFrame, useThree} from '@react-three/fiber'
+import {CapsuleCollider, euler, interactionGroups, RigidBody, useRapier} from '@react-three/rapier'
+import {IfInSessionMode, useXR} from '@react-three/xr'
+import {useEffect, useRef, useState} from 'react'
 import {VRController} from './VRControls.jsx'
 import * as THREE from 'three'
 
@@ -27,6 +27,58 @@ export function Player() {
     const [, get] = useKeyboardControls()
     // Flag to check if the player can jump
     const [canJump, setCanJump] = useState(true)
+    const { isPresenting } = useXR()
+    const { camera } = useThree()
+    const yaw = useRef(0)
+    const pitch = useRef(0)
+
+    useEffect(() => {
+        const euler = new THREE.Euler(0, 0, 0, 'YXZ')
+        const state = {
+            dragging: false,
+            prevX: 0,
+            prevY: 0,
+        }
+
+        const onMouseDown = (e) => {
+            state.dragging = true
+            document.body.style.cursor = 'grabbing'
+            state.prevX = e.clientX
+            state.prevY = e.clientY
+        }
+
+        const onMouseUp = () => {
+            state.dragging = false
+            document.body.style.cursor = 'grab'
+        }
+
+        const onMouseMove = (e) => {
+            if (!state.dragging) return
+
+            const dx = e.clientX - state.prevX
+            const dy = e.clientY - state.prevY
+
+            yaw.current -= dx * 0.002
+            pitch.current -= dy * 0.002
+            pitch.current = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitch.current))
+
+            euler.set(pitch.current, yaw.current, 0)
+            camera.quaternion.setFromEuler(euler)
+
+            state.prevX = e.clientX
+            state.prevY = e.clientY
+        }
+
+        window.addEventListener('mousedown', onMouseDown)
+        window.addEventListener('mouseup', onMouseUp)
+        window.addEventListener('mousemove', onMouseMove)
+
+        return () => {
+            window.removeEventListener('mousedown', onMouseDown)
+            window.removeEventListener('mouseup', onMouseUp)
+            window.removeEventListener('mousemove', onMouseMove)
+        }
+    }, [camera])
 
     // Player movement function
     const playerMove = ({
@@ -67,7 +119,7 @@ export function Player() {
         sideVector.set((left ? 1 : 0) - (right ? 1 : 0), 0, 0)
         direction
             .subVectors(frontVector, sideVector)
-            .applyQuaternion(quaternionFunc) // Apply current player rotation
+            .applyQuaternion(camera.quaternion) // Apply current player rotation
             .setComponent(1, 0)
             .normalize()
             .multiplyScalar(SPEED)

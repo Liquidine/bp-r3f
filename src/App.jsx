@@ -2,7 +2,6 @@ import {Canvas} from "@react-three/fiber";
 import {useRef, useState} from "react";
 import {createXRStore, XR} from "@react-three/xr";
 import {KeyboardControls, PerspectiveCamera} from "@react-three/drei";
-import LookControls from "./components/controls/CameraControls.jsx";
 import Board from "./components/Board.jsx";
 import {Floor} from "./components/models/floor.jsx";
 import {Dressing} from "./components/models/dressing.jsx";
@@ -11,7 +10,7 @@ import {Vector3} from "three";
 import {LeftController} from "./components/controls/LeftController.jsx";
 import {RightController} from "./components/controls/RightController.jsx";
 import {Player} from "./components/controls/Player.jsx";
-import {Physics, RigidBody} from "@react-three/rapier";
+import {CuboidCollider, Physics, RigidBody} from "@react-three/rapier";
 
 //parts from: https://github.com/meta-quest/webxr-first-steps-react/blob/starting-template/tutorial/chapter1.md
 
@@ -88,22 +87,20 @@ function App() {
                             <Physics gravity={[0, -9.81, 0]}>
                                 <Floor/>
                                 <RigidBody type="fixed" colliders="cuboid">
-                                    <mesh position={[0, 1.1, 0]} visible={false}>
-                                        <boxGeometry args={[19, 1, 17]}/>
-                                        <meshBasicMaterial color="green"/>
-                                    </mesh>
+                                    <CuboidCollider args={[9.5, 0.5, 8.5]} position={[0, 1.1, 0]} />
                                 </RigidBody>
                                 <Player/>
                             </Physics>
                             <Podium/>
                         </XR>
 
-                        <LookControls/>
-
                         <Dressing/>
-                        <Board leftControllerRef={LeftControlRef}
-                               rightControllerRef={RightControlRef}
-                               position={[0.7, 1.5, -0.5]}/>
+                        <Board
+                                offline={true}
+                                mineCount={11}
+                                position={[0.7, 1.5, -0.5]}
+                                leftControllerRef={LeftControlRef}
+                                rightControllerRef={RightControlRef}/>
                     </Canvas>
                 </KeyboardControls>
             </div>

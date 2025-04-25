@@ -1,17 +1,19 @@
 import {useEffect, useRef, useState} from "react";
 import Tile from "./Tile";
-import {processUserInput, startNewGame} from "./fetch_api.js";
-import {MinesweeperInterface} from "./MineInterface.js";
+import {processUserInput, startNewGame} from "./logic/apiClient.js";
+import {MineSweeperState} from "./logic/mineSweeperState.js";
 import {useFrame} from "@react-three/fiber";
 import {Box3} from "three";
+import {MinesweeperGame} from "./logic/mineSweeperLogic.js";
 
-export default function Board({ position = [0, 0, 0] ,leftControllerRef,rightControllerRef}) {
-    const [gameData, setGameData] = useState(null);
-    const [loading,setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [, setTrigger] = useState(0);
+export default function Board({offline = false,
+                                  mineCount = 10,
+                                  position = [0, 0, 0] ,
+                                  leftControllerRef, rightControllerRef}) {
     const size = 9;
-    const mineCount= 10;
+    const tileSize = 1.2;
+    const gap = 0;
+    const spacing = tileSize + gap;
 
     const tileRefs = useRef([]);
     const lastInteractedTile = useRef({
@@ -19,32 +21,35 @@ export default function Board({ position = [0, 0, 0] ,leftControllerRef,rightCon
         right: null,
     });
 
-    const tileSize = 1.2;
-    const gap = 0;
-    const spacing = tileSize + gap;
-
+    const [, setTrigger] = useState(0);
     const updateGrid = () => setTrigger(prev => prev + 1); // Force re-render
+
+    const gameInterface = useRef(null);
+    const [loading,setLoading] = useState(true);
 
     const fetchNewGame = async () => {
         try {
             const response = await startNewGame(size, size, mineCount);
-            gameInterface.updateGame(response);
+            gameInterface.current.updateGame(response);
             return response;
         } catch (error) {
             throw error;
         }
     }
 
-    const gameInterface = new MinesweeperInterface();
-
     useEffect(() => {
         const startGame = async () => {
-            try {
-                const response = await fetchNewGame();
-                gameInterface.updateGame(response);
-                setGameData(gameInterface);
-            } catch (error) {
-                console.error("Error starting the game:", error);
+            if(!offline) {
+                gameInterface.current = new MineSweeperState();
+                try {
+                    const response = await fetchNewGame();
+                    gameInterface.current.updateGame(response);
+                } catch (error) {
+                    console.error("Error starting the game:", error);
+                    setLoading(false);
+                }
+            } else {
+                gameInterface.current = new MinesweeperGame(size,mineCount);
                 setLoading(false);
             }
         };
@@ -52,6 +57,7 @@ export default function Board({ position = [0, 0, 0] ,leftControllerRef,rightCon
         startGame().then(() => { setLoading(false)});
     }, []);
 
+    //This is used to check collision with the hitboxes and tiles for the VR controllers every frame
     useFrame(() => {
         const interactionState = {
             left: {
@@ -106,17 +112,17 @@ export default function Board({ position = [0, 0, 0] ,leftControllerRef,rightCon
     });
 
     const handleTileClick = async (index) => {
-        if (!gameData) return;
-
         const row = Math.floor(index / 9);
         const col = index % 9;
 
-        const response = await processUserInput(row, col, false);
-        gameInterface.updateGame(response);
-        setGameData(gameInterface);
+        if(!offline) {
+            const response = await processUserInput(row, col, false);
+            gameInterface.current.updateGame(response);
+        } else {
+            gameInterface.current.revealTile(index)
+        }
 
-        if (gameInterface.grid[index].mine && gameInterface.grid[index].revealed) {
-            console.log("Mine hit! Revealing all")
+        if (gameInterface.current.grid[index].mine && gameInterface.current.grid[index].revealed) {
             revealAll();
         }
 
@@ -124,56 +130,30 @@ export default function Board({ position = [0, 0, 0] ,leftControllerRef,rightCon
     };
 
     const handleTileMark = async (index) => {
-        if (!gameData) return;
-
         const row = Math.floor(index / 9);
         const col = index % 9;
 
-        const response = await processUserInput(row, col, true);
-        gameInterface.updateGame(response);
-        setGameData(gameInterface);
+        if(!offline) {
+            const response = await processUserInput(row, col, true);
+            gameInterface.current.updateGame(response);
+        } else {
+            gameInterface.current.markTile(index);
+        }
 
+        updateGrid();
+    };
+
+    const revealAll = () => {
+        gameInterface.current.grid.forEach(tile => tile.revealed = true);
         updateGrid();
     };
 
     if (loading) return null;
 
-    if (error) {
-        return (
-            <group>
-                <mesh position={[0, 1, 0]}>
-                    <textGeometry args={[error, { size: 0.3, height: 0.05 }]} />
-                    <meshStandardMaterial color="red" />
-                </mesh>
-            </group>
-        );
-    }
-
-    if (!gameData) return null;
-
-    const revealAll = () => {
-        if (!gameData) return;
-
-        const newGrid = gameData.grid.map(tile => ({
-            ...tile,
-            revealed: true
-        }));
-
-        const newGameData = new MinesweeperInterface();
-        newGameData.grid = newGrid;
-        newGameData.status = gameData.status;
-        newGameData.markCount = gameData.markCount;
-
-        setGameData(newGameData);
-
-        updateGrid();
-    };
-
-
     return (
         <group position={position}>
             <group position={[-(9 * spacing) / 2, 0, -(9 * spacing) / 2]}> {/* Center the grid */}
-                {gameData.grid.map((tile, index) => {
+                {gameInterface.current.grid.map((tile, index) => {
                     const x = (index % 9) * spacing;
                     const z = Math.floor(index / 9) * spacing;
                     return (
@@ -183,7 +163,7 @@ export default function Board({ position = [0, 0, 0] ,leftControllerRef,rightCon
                             position={[x, 0, z]}
                             index={index}
                             size={tileSize}
-                            game={gameData}
+                            game={gameInterface.current}
                             updateGrid={updateGrid}
                             handleClick={handleTileClick}
                             handleMark={handleTileMark}

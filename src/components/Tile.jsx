@@ -30,41 +30,18 @@ const Tile = forwardRef(({ position, index, size, game, updateGrid, handleClick,
         handleMark(index);
     };
 
-    const determineColour = () => {
-        if (tile.revealed) {
-            if (tile.mine) {
-                return "red"; // Exploded mine
-            } else {
-                // Revealed, not a mine — color based on clue
-                if (tile.clue === 0) return "lightgray";
-                else if (tile.clue === 1) return "dodgerblue";
-                else if (tile.clue === 2) return "green";
-                else if (tile.clue === 3) return "orange";
-                else if (tile.clue >= 4) return "darkred";
-            }
-        } else if (hovered && !tile.revealed && !tile.marked) {
-            return "lightblue"
-        } else {
-            if (tile.marked) {
-                return "gold";
-            } else {
-                return "purple";
-            }
-        }
-    }
-
     const textures = useLoader(TextureLoader, [
-        'mineTextures/mine.png',
-        'mineTextures/tile0.png',
-        'mineTextures/tile0-1.png',
-        'mineTextures/tile1.png',
-        'mineTextures/tile2.png',
-        'mineTextures/tile3.png',
-        'mineTextures/tile4.png',
-        'mineTextures/tile5.png',
-        'mineTextures/tile6.png',
-        'mineTextures/tile7.png',
-        'mineTextures/tile8.png'
+        'textures/mine.png',
+        'textures/tile0.png',
+        'textures/tile0-1.png',
+        'textures/tile1.png',
+        'textures/tile2.png',
+        'textures/tile3.png',
+        'textures/tile4.png',
+        'textures/tile5.png',
+        'textures/tile6.png',
+        'textures/tile7.png',
+        'textures/tile8.png'
     ])
 
     const getTexture = () => {
