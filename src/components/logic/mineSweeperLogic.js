@@ -15,6 +15,8 @@ export class MinesweeperGame {
         this.mines = mines;
         this.grid = this.initializeGrid(size);
         this.status = "PLAYING";
+        this.openTiles = 0;
+        this.markedTiles = 0;
         this.placeMines(size, mines);
         this.calculateClues();
     }
@@ -89,6 +91,9 @@ export class MinesweeperGame {
         }
 
         tile.revealed = true;
+        this.openTiles += 1;
+
+        this.checkGameOver()
 
         if (tile.clue === 0) {
             this.floodReveal(index);
@@ -104,7 +109,18 @@ export class MinesweeperGame {
         const tile = this.grid[index];
         if (tile.revealed || this.status === 'GAME OVER') return;
 
+        if(!tile.marked) { this.markedTiles += 1}
+        else { this.markedTiles -= 1 }
         tile.marked = !tile.marked;
+
+        this.checkGameOver()
+    }
+
+    checkGameOver() {
+        if(this.openTiles === (this.size * this.size)-this.mines && this.markedTiles === this.mines) {
+            this.status = 'GAME OVER';
+            this.revealAll();
+        }
     }
 
     /**

@@ -1,12 +1,11 @@
 import {Canvas} from "@react-three/fiber";
-import {useRef, useState} from "react";
+import {useRef} from "react";
 import {createXRStore, XR} from "@react-three/xr";
-import {KeyboardControls, PerspectiveCamera} from "@react-three/drei";
+import {KeyboardControls} from "@react-three/drei";
 import Board from "./components/Board.jsx";
 import {Floor} from "./components/models/floor.jsx";
 import {Dressing} from "./components/models/dressing.jsx";
 import {Podium} from "./components/models/podium.jsx";
-import {Vector3} from "three";
 import {LeftController} from "./components/controls/LeftController.jsx";
 import {RightController} from "./components/controls/RightController.jsx";
 import {Player} from "./components/controls/Player.jsx";
@@ -15,10 +14,8 @@ import {CuboidCollider, Physics, RigidBody} from "@react-three/rapier";
 //parts from: https://github.com/meta-quest/webxr-first-steps-react/blob/starting-template/tutorial/chapter1.md
 
 function App() {
-    const cameraRef = useRef();
     const LeftControlRef = useRef(null);
     const RightControlRef = useRef(null);
-    const [position, setPosition] = useState(new Vector3(0, 1.6, 14));
 
     const xrStore = createXRStore({
         emulate: {
@@ -66,7 +63,6 @@ function App() {
                         }}
                     >
                         <color args={[0x808080]} attach="background"/>
-                        <PerspectiveCamera ref={cameraRef} makeDefault position={[0, 4, 14]} fov={75}/>
                         <ambientLight intensity={0.3}/>
                         <directionalLight
                             position={[-24, 17, -67]}

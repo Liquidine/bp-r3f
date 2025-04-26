@@ -122,7 +122,8 @@ export default function Board({offline = false,
             gameInterface.current.revealTile(index)
         }
 
-        if (gameInterface.current.grid[index].mine && gameInterface.current.grid[index].revealed) {
+        if (gameInterface.current.grid[index].mine && gameInterface.current.grid[index].revealed ||
+            isGameOver()) {
             revealAll();
         }
 
@@ -140,8 +141,20 @@ export default function Board({offline = false,
             gameInterface.current.markTile(index);
         }
 
+        if(isGameOver()) revealAll();
+
         updateGrid();
     };
+
+    const isGameOver = () => {
+        let open = 0;
+        let marked = 0;
+        gameInterface.current.grid.forEach(tile => {
+            if(tile.revealed) {open += 1}
+            if(tile.marked) {marked += 1}
+        });
+        return open === (size * size) - mineCount && marked === mineCount;
+    }
 
     const revealAll = () => {
         gameInterface.current.grid.forEach(tile => tile.revealed = true);

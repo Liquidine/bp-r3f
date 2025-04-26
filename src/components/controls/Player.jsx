@@ -2,8 +2,8 @@
 //implementation from:https://qiita.com/f-kaito/items/a68ea9fd1e5b378f178e#%E6%9C%80%E5%BE%8C%E3%81%AB
 import {useKeyboardControls} from '@react-three/drei'
 import {useFrame, useThree} from '@react-three/fiber'
-import {CapsuleCollider, euler, interactionGroups, RigidBody, useRapier} from '@react-three/rapier'
-import {IfInSessionMode, useXR} from '@react-three/xr'
+import {CapsuleCollider, interactionGroups, RigidBody, useRapier} from '@react-three/rapier'
+import {IfInSessionMode} from '@react-three/xr'
 import {useEffect, useRef, useState} from 'react'
 import {VRController} from './VRControls.jsx'
 import * as THREE from 'three'
@@ -27,7 +27,6 @@ export function Player() {
     const [, get] = useKeyboardControls()
     // Flag to check if the player can jump
     const [canJump, setCanJump] = useState(true)
-    const { isPresenting } = useXR()
     const { camera } = useThree()
     const yaw = useRef(0)
     const pitch = useRef(0)
@@ -188,12 +187,12 @@ export function Player() {
                 colliders={false}
                 mass={1}
                 type="dynamic"
-                position={[0, 10, 0]}
+                position={[0, 6, 0]}
                 enabledRotations={[false, false, false]} // Lock rotation to prevent tipping over
                 collisionGroups={interactionGroups([0], [0])}
             >
                 {/* Define player hitbox with capsule collider */}
-                <CapsuleCollider args={[1, 0.7]} />
+                <CapsuleCollider args={[2.5, 0.7]} />
 
                 {/* Enable VR mode controls only during a VR session */}
                 <IfInSessionMode allow={['immersive-vr']}>
