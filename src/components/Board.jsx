@@ -1,10 +1,10 @@
 import {useEffect, useRef, useState} from "react";
 import Tile from "./Tile";
-import {processUserInput, startNewGame} from "./logic/apiClient.js";
-import {MineSweeperState} from "./logic/mineSweeperState.js";
+import {processUserInput, startNewGame} from "../logic/apiClient.js";
+import {MineSweeperState} from "../logic/mineSweeperState.js";
 import {useFrame} from "@react-three/fiber";
 import {Box3} from "three";
-import {MinesweeperGame} from "./logic/mineSweeperLogic.js";
+import {MinesweeperGame} from "../logic/mineSweeperLogic.js";
 
 export default function Board({offline = false,
                                   mineCount = 10,
@@ -22,11 +22,19 @@ export default function Board({offline = false,
     });
 
     const [, setTrigger] = useState(0);
-    const updateGrid = () => setTrigger(prev => prev + 1); // Force re-render
+    /**
+     * Forces a re-render of the board
+     */
+    const updateGrid = () => setTrigger(prev => prev + 1);
 
     const gameInterface = useRef(null);
     const [loading,setLoading] = useState(true);
 
+    /**
+     * Starts a new game with the server.
+     * <br> Requires offline to be false.
+     * @returns {Promise<*>}
+     */
     const fetchNewGame = async () => {
         try {
             const response = await startNewGame(size, size, mineCount);
@@ -37,6 +45,10 @@ export default function Board({offline = false,
         }
     }
 
+    /**
+     * Used to start the game.
+     * <br> If offline is true, contacts the server, otherwise uses local logic.
+     */
     useEffect(() => {
         const startGame = async () => {
             if(!offline) {
@@ -57,7 +69,11 @@ export default function Board({offline = false,
         startGame().then(() => { setLoading(false)});
     }, []);
 
-    //This is used to check collision with the hitboxes and tiles for the VR controllers every frame
+    /**
+     * Used to check if any tiles are colliding with VR controllers and adds left and right trigger functions to
+     * the controller.
+     * <br> Requires a reference to the VR controllers.
+     */
     useFrame(() => {
         const interactionState = {
             left: {
@@ -111,6 +127,11 @@ export default function Board({offline = false,
         });
     });
 
+    /**
+     * Function used to handle opening a tile.
+     * <br> Updates the grid logically first and then graphically.
+     * @param index tile to open
+     */
     const handleTileClick = async (index) => {
         const row = Math.floor(index / 9);
         const col = index % 9;
@@ -130,6 +151,11 @@ export default function Board({offline = false,
         updateGrid();
     };
 
+    /**
+     * Function used to handle marking a tile.
+     * <br> Updates the grid logically first and then graphically.
+     * @param index tile to open
+     */
     const handleTileMark = async (index) => {
         const row = Math.floor(index / 9);
         const col = index % 9;

@@ -20,7 +20,7 @@ export const RightController = forwardRef((props, ref) => {
     return (
         <group>
             <Stick scale={0.1} position={[0,-0.3,0]}/>
-            <mesh ref={hitboxRef} visible={true} position={[0.05,1.1,0]}>
+            <mesh ref={hitboxRef} visible={false} position={[0.05,1.1,0]}>
                 <boxGeometry args={[0.2, 0.2, 0.2]}/>
                 <meshBasicMaterial color="red" wireframe/>
             </mesh>
