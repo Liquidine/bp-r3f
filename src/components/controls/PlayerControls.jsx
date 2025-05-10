@@ -1,4 +1,4 @@
-// Player.jsx
+// PlayerControls.jsx
 //implementation from:https://qiita.com/f-kaito/items/a68ea9fd1e5b378f178e#%E6%9C%80%E5%BE%8C%E3%81%AB
 import {useKeyboardControls} from '@react-three/drei'
 import {useFrame, useThree} from '@react-three/fiber'
@@ -18,7 +18,7 @@ const quaternionFunc = new THREE.Quaternion()
 const quaternionFunc2 = new THREE.Quaternion()
 const eulerAngles = new THREE.Euler()
 
-export function Player() {
+export function PlayerControls() {
     // Reference to the player's RigidBody
     const rigidBodyRef = useRef(null)
     // Get physics engine and world
@@ -79,7 +79,7 @@ export function Player() {
         }
     }, [camera])
 
-    // Player movement function
+    // PlayerControls movement function
     const playerMove = ({
                             forward,
                             backward,
@@ -129,7 +129,7 @@ export function Player() {
         )
     }
 
-    // Player jump function
+    // PlayerControls jump function
     const playerJump = () => {
         if (!rigidBodyRef.current) return
         const position = rigidBodyRef.current.translation()

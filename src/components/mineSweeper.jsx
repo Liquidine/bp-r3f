@@ -6,7 +6,7 @@ import {useFrame} from "@react-three/fiber";
 import {Box3} from "three";
 import {MinesweeperGame} from "../logic/mineSweeperLogic.js";
 
-export default function Board({offline = false,
+export default function MineSweeper({offline = false,
                                   mineCount = 10,
                                   position = [0, 0, 0] ,
                                   leftControllerRef, rightControllerRef}) {

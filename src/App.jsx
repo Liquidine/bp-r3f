@@ -2,13 +2,13 @@ import {Canvas} from "@react-three/fiber";
 import {useRef} from "react";
 import {createXRStore, XR} from "@react-three/xr";
 import {KeyboardControls} from "@react-three/drei";
-import Board from "./components/Board.jsx";
+import MineSweeper from "./components/mineSweeper.jsx";
 import {Floor} from "./components/models/floor.jsx";
 import {Dressing} from "./components/models/dressing.jsx";
 import {Podium} from "./components/models/podium.jsx";
 import {LeftController} from "./components/controls/LeftController.jsx";
 import {RightController} from "./components/controls/RightController.jsx";
-import {Player} from "./components/controls/Player.jsx";
+import {PlayerControls} from "./components/controls/PlayerControls.jsx";
 import {CuboidCollider, Physics, RigidBody} from "@react-three/rapier";
 
 //parts from: https://github.com/meta-quest/webxr-first-steps-react/blob/starting-template/tutorial/chapter1.md
@@ -85,13 +85,13 @@ function App() {
                                 <RigidBody type="fixed" colliders="cuboid">
                                     <CuboidCollider args={[9.5, 0.5, 8.5]} position={[0, 1.1, 0]} />
                                 </RigidBody>
-                                <Player/>
+                                <PlayerControls/>
                             </Physics>
                             <Podium/>
                         </XR>
 
                         <Dressing/>
-                        <Board
+                        <MineSweeper
                                 offline={true}
                                 mineCount={11}
                                 position={[0.7, 1.5, -0.5]}
