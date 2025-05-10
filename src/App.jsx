@@ -1,7 +1,7 @@
 import {Canvas} from "@react-three/fiber";
 import {useRef} from "react";
 import {createXRStore, XR} from "@react-three/xr";
-import {KeyboardControls} from "@react-three/drei";
+import {KeyboardControls, Sky} from "@react-three/drei";
 import MineSweeper from "./components/mineSweeper.jsx";
 import {Floor} from "./components/models/floor.jsx";
 import {Dressing} from "./components/models/dressing.jsx";
@@ -79,6 +79,7 @@ function App() {
                             shadow-camera-left={-300}
                             shadow-camera-right={300}
                         />
+                        <Sky azimuth="0.2" inclination="0.50" turbidity="1" rayleigh="4"/>
                         <XR store={xrStore}>
                             <Physics gravity={[0, -9.81, 0]}>
                                 <Floor/>
