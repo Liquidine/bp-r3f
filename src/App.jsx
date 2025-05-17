@@ -10,6 +10,9 @@ import {LeftController} from "./components/controls/LeftController.jsx";
 import {RightController} from "./components/controls/RightController.jsx";
 import {PlayerControls} from "./components/controls/PlayerControls.jsx";
 import {CuboidCollider, Physics, RigidBody} from "@react-three/rapier";
+import {Pillar} from "./components/models/pillar.jsx";
+import {Pillar_debris} from "./components/models/pillar_debris.jsx";
+import * as THREE from "three";
 
 //parts from: https://github.com/meta-quest/webxr-first-steps-react/blob/starting-template/tutorial/chapter1.md
 
@@ -59,14 +62,14 @@ function App() {
                         style={{position: "fixed", width: "100vw", height: "100vh",}}
                         shadows
                         onCreated={({camera}) => {
-                            window.cameraRef = camera
+                            window.cameraRef = camera;
                         }}
                     >
-                        <color args={[0x808080]} attach="background"/>
+                        <color args={['#997D31']} attach="background"/>
                         <ambientLight intensity={0.3}/>
                         <directionalLight
                             position={[-24, 17, -67]}
-                            intensity={2}
+                            intensity={1}
                             castShadow={true}
 
                             shadow-mapSize-width={2048}
@@ -79,12 +82,13 @@ function App() {
                             shadow-camera-left={-300}
                             shadow-camera-right={300}
                         />
-                        <Sky azimuth="0.2" inclination="0.50" turbidity="1" rayleigh="4"/>
+                        <Sky azimuth="0.18" inclination="0.50" turbidity="1" rayleigh="1.7"/>
+                        <fog attach="fog" args={['#997D31', 5, 60]}/>
                         <XR store={xrStore}>
                             <Physics gravity={[0, -9.81, 0]}>
                                 <Floor/>
                                 <RigidBody type="fixed" colliders="cuboid">
-                                    <CuboidCollider args={[9.5, 0.5, 8.5]} position={[0, 1.1, 0]} />
+                                    <CuboidCollider args={[9.5, 0.5, 8.5]} position={[0, 1.1, 0]}/>
                                 </RigidBody>
                                 <PlayerControls/>
                             </Physics>
@@ -92,12 +96,19 @@ function App() {
                         </XR>
 
                         <Dressing/>
+                        <Pillar position={[-30, 0, -10]}/>
+                        <Pillar position={[-15, 0, 15]}/>
+                        <Pillar position={[15, 0, -10]}/>
+                        <Pillar_debris position={[-15, 0, -10]}/>
+                        <Pillar_debris position={[-30, 0, 15]}/>
+                        <Pillar_debris position={[15, 0, 15]}/>
+
                         <MineSweeper
-                                offline={true}
-                                mineCount={11}
-                                position={[0.7, 1.5, -0.5]}
-                                leftControllerRef={LeftControlRef}
-                                rightControllerRef={RightControlRef}/>
+                            offline={true}
+                            mineCount={11}
+                            position={[0.7, 1.2, -0.5]}
+                            leftControllerRef={LeftControlRef}
+                            rightControllerRef={RightControlRef}/>
                     </Canvas>
                 </KeyboardControls>
             </div>

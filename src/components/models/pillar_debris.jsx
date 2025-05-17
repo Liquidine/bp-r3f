@@ -11,7 +11,7 @@ export function Pillar_debris(props) {
   const { nodes, materials } = useGLTF('models/pillar_debris-transformed.glb')
   return (
     <group {...props} dispose={null}>
-      <mesh geometry={nodes.Object_7.geometry} material={materials['Columna_Material.002']} position={[-0.599, 2.782, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={0.667} />
+      <mesh castShadow geometry={nodes.Object_7.geometry} material={materials['Columna_Material.002']} position={[-0.599, 2.782, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={0.667} />
     </group>
   )
 }

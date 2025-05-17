@@ -11,7 +11,7 @@ export function Pillar(props) {
   const { nodes, materials } = useGLTF('models/pillar-transformed.glb')
   return (
     <group {...props} dispose={null}>
-      <mesh geometry={nodes.Object_32.geometry} material={materials.Columna_Material} position={[0, 3.299, 0]} rotation={[-Math.PI / 2, 0, 0]} />
+      <mesh castShadow geometry={nodes.Object_32.geometry} material={materials.Columna_Material} position={[0, 3.299, 0]} rotation={[-Math.PI / 2, 0, 0]} />
     </group>
   )
 }

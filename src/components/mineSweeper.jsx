@@ -11,7 +11,7 @@ export default function MineSweeper({offline = false,
                                   position = [0, 0, 0] ,
                                   leftControllerRef, rightControllerRef}) {
     const size = 9;
-    const tileSize = 1.2;
+    const tileSize = 1.4;
     const gap = 0;
     const spacing = tileSize + gap;
 

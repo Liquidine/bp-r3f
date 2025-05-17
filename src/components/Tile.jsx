@@ -69,7 +69,8 @@ const Tile = forwardRef(({ position, index, size, game, updateGrid, handleClick,
 
     return (
         <mesh
-            position={position}
+            receiveShadow
+            position={[position[0], (tile.revealed && tile.clue === 0 && !tile.mine) ? position[1] - 0.25 : position[1], position[2]]}
             onPointerOver={handlePointerOver}
             onPointerOut={handlePointerOut}
             onClick={clickTile}
